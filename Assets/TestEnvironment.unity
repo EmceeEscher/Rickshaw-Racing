@@ -7106,6 +7106,11 @@ Prefab:
       propertyPath: m_Name
       value: P1Rickshaw
       objectReference: {fileID: 0}
+    - target: {fileID: 114576626046596266, guid: bbc71e5612c11416b81cbec469a0ac9a,
+        type: 2}
+      propertyPath: usingController
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bbc71e5612c11416b81cbec469a0ac9a, type: 2}
   m_IsPrefabParent: 0
@@ -7488,8 +7493,8 @@ MonoBehaviour:
   m_Script: {fileID: 1077351063, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
+  m_HorizontalAxis: HorizontalMoveP1
+  m_VerticalAxis: VerticalMoveP1
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
@@ -8201,6 +8206,11 @@ Prefab:
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 114576626046596266, guid: bbc71e5612c11416b81cbec469a0ac9a,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bbc71e5612c11416b81cbec469a0ac9a, type: 2}
   m_IsPrefabParent: 0
@@ -8543,7 +8553,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1355301921}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86d67446189ab494daef8be3a690558f, type: 3}
   m_Name: 
@@ -8554,13 +8564,16 @@ MonoBehaviour:
   car: {fileID: 1371252450}
   followCam: {fileID: 456915709}
   force: 50
+  ammoCount: 10
+  startLine: {fileID: 1982083664}
+  fireDelay: 1
 --- !u!114 &1355301924
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1355301921}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 830265e04030144f68474eac00340015, type: 3}
   m_Name: 

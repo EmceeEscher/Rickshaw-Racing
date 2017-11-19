@@ -12,6 +12,13 @@ public class Player : MonoBehaviour {
 	public GameObject startLine;
 
     public List<GameObject> wheels;
+
+	public bool usingController = false;
+
+	public int playerNum = 1;
+	private string playerHorizAxis = "HorizontalMoveP1";
+	private string playerVertAxis = "VerticalMoveP1";
+
     private float wheelVelocity;
 
     private float tightness = 1.0f;
@@ -40,6 +47,8 @@ public class Player : MonoBehaviour {
 		lapManager = startLine.GetComponent<LapManagerScript> ();
 
 
+
+
 	}
 	
 	// Update is called once per frame
@@ -53,68 +62,103 @@ public class Player : MonoBehaviour {
 
     void HandleControls()
     {
-        if (Input.GetKey(KeyCode.W))
-        {
-            if (wheelVelocity < 175f)
-            {
-                wheelVelocity+= 2.0f;
-            }
-            rb.AddRelativeForce(Vector3.forward * speed);
+		if (!usingController) {
+			if (Input.GetKey (KeyCode.W)) {
+				if (wheelVelocity < 175f) {
+					wheelVelocity += 2.0f;
+				}
+				rb.AddRelativeForce (Vector3.forward * speed);
 
-            thrusting = true;
-        }
+				thrusting = true;
+			}
 
-        if (Input.GetKey(KeyCode.S))
-        {
-            if (wheelVelocity > -175f)
-            {
-                wheelVelocity-= 2.0f;
-            }
-            rb.AddRelativeForce(-Vector3.forward * speed);
+			if (Input.GetKey (KeyCode.S)) {
+				if (wheelVelocity > -175f) {
+					wheelVelocity -= 2.0f;
+				}
+				rb.AddRelativeForce (-Vector3.forward * speed);
 
-            thrusting = true;
-        }
+				thrusting = true;
+			}
        
-        if (Input.GetKey(KeyCode.A))
-        {
-            if (turnSpeed < 60)
-                turnSpeed += 4f;
-            //transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
-            transform.Rotate(Vector3.up, -turnSpeed * Time.deltaTime);
-            turning = true;
-        }
+			if (Input.GetKey (KeyCode.A)) {
+				if (turnSpeed < 60)
+					turnSpeed += 4f;
+				//transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
+				transform.Rotate (Vector3.up, -turnSpeed * Time.deltaTime);
+				turning = true;
+			}
 
-        if (Input.GetKey(KeyCode.D))
-        {
-            if (turnSpeed < 60)
-                turnSpeed += 4f;
-            //transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
-            transform.Rotate(Vector3.up, turnSpeed * Time.deltaTime);
-            turning = true;
-        }
+			if (Input.GetKey (KeyCode.D)) {
+				if (turnSpeed < 60)
+					turnSpeed += 4f;
+				//transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
+				transform.Rotate (Vector3.up, turnSpeed * Time.deltaTime);
+				turning = true;
+			}
 
 
 
 
-        if (Input.GetKeyUp(KeyCode.D))
-        {
-            turning = false;
-        }
+			if (Input.GetKeyUp (KeyCode.D)) {
+				turning = false;
+			}
 
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-            turning = false;
-        }
+			if (Input.GetKeyUp (KeyCode.A)) {
+				turning = false;
+			}
 
-        if (Input.GetKeyUp(KeyCode.W))
-        {
-            thrusting = false;
-        }
+			if (Input.GetKeyUp (KeyCode.W)) {
+				thrusting = false;
+			}
 
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            thrusting = false;
-        }
+			if (Input.GetKeyUp (KeyCode.S)) {
+				thrusting = false;
+			}
+		} else {
+			if (Input.GetAxis (playerVertAxis) > 0.5) {
+				if (wheelVelocity < 175f) {
+					wheelVelocity += 2.0f;
+				}
+				rb.AddRelativeForce (Vector3.forward * speed);
+
+				thrusting = true;
+			}
+
+			//Commented out reversing for now.
+//			if (Input.GetAxis (playerVertAxis) < -0.5) {
+//				if (wheelVelocity > -175f) {
+//					wheelVelocity -= 2.0f;
+//				}
+//				rb.AddRelativeForce (-Vector3.forward * speed);
+//
+//				thrusting = true;
+//			}
+
+			if (Input.GetAxis (playerHorizAxis) < -0.5) {
+				if (turnSpeed < 60)
+					turnSpeed += 4f;
+				//transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
+				transform.Rotate (Vector3.up, -turnSpeed * Time.deltaTime);
+				turning = true;
+			}
+
+			if (Input.GetAxis (playerHorizAxis) > 0.5) {
+				if (turnSpeed < 60)
+					turnSpeed += 4f;
+				//transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
+				transform.Rotate (Vector3.up, turnSpeed * Time.deltaTime);
+				turning = true;
+			}
+
+			if (thrusting && Mathf.Abs(Input.GetAxis(playerVertAxis)) < 0.5) {
+				thrusting = false;
+			}
+
+			if (turning && Mathf.Abs (Input.GetAxis (playerHorizAxis)) < 0.5) {
+				turning = false;
+			}
+		}
 
         if (!turning)
         {
