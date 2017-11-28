@@ -5,11 +5,19 @@ using UnityEngine;
 public class Player : MonoBehaviour {
     Rigidbody rb;
     public float speed;
+    public float boostedSpeed;
+    public float baseSpeed;
     
     public Quaternion targetRotation;
+    private float orientTolerance = 0.2f;
+    private float boost;
+    private float maxBoost = 150;
 
 	public CrosshairMouseScript crosshairScript;
 	public GameObject startLine;
+    private bool startedRace;
+    private bool wheelsOnGround;
+    private bool boosting;
 
     public List<GameObject> wheels;
 
@@ -19,9 +27,11 @@ public class Player : MonoBehaviour {
 	private string playerHorizAxis = "HorizontalMoveP1";
 	private string playerVertAxis = "VerticalMoveP1";
 
-    private float wheelVelocity;
 
-    private float tightness = 1.0f;
+
+    
+
+
 
     private float turnSpeed;
     private float deltaTurn;
@@ -29,7 +39,7 @@ public class Player : MonoBehaviour {
     private Vector3 updatedForward;
   
     private bool turning;
-    private bool thrusting;
+
 
     private TrailRenderer trailRend;
 
@@ -41,12 +51,14 @@ public class Player : MonoBehaviour {
         GetWheels();
 
         targetRotation = transform.rotation;
-        wheelVelocity = 0f;
         turnSpeed = 0f;
 
 		lapManager = startLine.GetComponent<LapManagerScript> ();
 
-
+		if (playerNum == 2) {
+			playerHorizAxis = "HorizontalMoveP2";
+			playerVertAxis = "VerticalMoveP2";
+		}
 
 
 	}
@@ -56,49 +68,54 @@ public class Player : MonoBehaviour {
 		if(lapManager.hasRaceStarted()){
         	SpinWheels();
         	HandleControls();
-       		// OrientUp();
+            //OrientUp();
+            CheckBoost();
+            HandleBoost();
 		}
 	}
 
     void HandleControls()
     {
-		if (!usingController) {
-			if (Input.GetKey (KeyCode.W)) {
-				if (wheelVelocity < 175f) {
-					wheelVelocity += 2.0f;
-				}
-				rb.AddRelativeForce (Vector3.forward * speed);
+        if (!usingController) {
+            if (Input.GetKey(KeyCode.W))
+            {
+                rb.AddRelativeForce(Vector3.forward * speed);
 
-				thrusting = true;
-			}
+            }
 
-			if (Input.GetKey (KeyCode.S)) {
-				if (wheelVelocity > -175f) {
-					wheelVelocity -= 2.0f;
-				}
-				rb.AddRelativeForce (-Vector3.forward * speed);
+            if (Input.GetKey(KeyCode.S))
+            {
+                rb.AddRelativeForce(-Vector3.forward * speed);
+            }
 
-				thrusting = true;
-			}
-       
-			if (Input.GetKey (KeyCode.A)) {
-				if (turnSpeed < 60)
-					turnSpeed += 4f;
-				//transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
-				transform.Rotate (Vector3.up, -turnSpeed * Time.deltaTime);
-				turning = true;
-			}
+            if (Input.GetKey(KeyCode.A))
+            {
+                if (turnSpeed < 60)
+                    turnSpeed += 5f;
+                //transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
+                transform.Rotate(Vector3.up, -turnSpeed * Time.deltaTime);
+                turning = true;
+            }
 
-			if (Input.GetKey (KeyCode.D)) {
-				if (turnSpeed < 60)
-					turnSpeed += 4f;
-				//transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
-				transform.Rotate (Vector3.up, turnSpeed * Time.deltaTime);
-				turning = true;
-			}
+            if (Input.GetKey(KeyCode.D))
+            {
+                if (turnSpeed < 60)
+                    turnSpeed += 5f;
+                //transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
+                transform.Rotate(Vector3.up, turnSpeed * Time.deltaTime);
+                turning = true;
+            }
 
+            if (Input.GetKeyDown(KeyCode.LeftShift) && !boosting)
+            {
+                    boosting = true;
 
+            }
 
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                boosting = false;
+            }
 
 			if (Input.GetKeyUp (KeyCode.D)) {
 				turning = false;
@@ -107,37 +124,20 @@ public class Player : MonoBehaviour {
 			if (Input.GetKeyUp (KeyCode.A)) {
 				turning = false;
 			}
-
-			if (Input.GetKeyUp (KeyCode.W)) {
-				thrusting = false;
-			}
-
-			if (Input.GetKeyUp (KeyCode.S)) {
-				thrusting = false;
-			}
 		} else {
 			if (Input.GetAxis (playerVertAxis) > 0.5) {
-				if (wheelVelocity < 175f) {
-					wheelVelocity += 2.0f;
-				}
 				rb.AddRelativeForce (Vector3.forward * speed);
-
-				thrusting = true;
 			}
 
 			//Commented out reversing for now.
 //			if (Input.GetAxis (playerVertAxis) < -0.5) {
-//				if (wheelVelocity > -175f) {
-//					wheelVelocity -= 2.0f;
-//				}
 //				rb.AddRelativeForce (-Vector3.forward * speed);
 //
-//				thrusting = true;
 //			}
 
 			if (Input.GetAxis (playerHorizAxis) < -0.5) {
 				if (turnSpeed < 60)
-					turnSpeed += 4f;
+					turnSpeed += 5f;
 				//transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
 				transform.Rotate (Vector3.up, -turnSpeed * Time.deltaTime);
 				turning = true;
@@ -145,15 +145,12 @@ public class Player : MonoBehaviour {
 
 			if (Input.GetAxis (playerHorizAxis) > 0.5) {
 				if (turnSpeed < 60)
-					turnSpeed += 4f;
+					turnSpeed += 5f;
 				//transform.RotateAround(transform.position, Vector3.up, -turnSpeed * Time.deltaTime);
 				transform.Rotate (Vector3.up, turnSpeed * Time.deltaTime);
 				turning = true;
 			}
 
-			if (thrusting && Mathf.Abs(Input.GetAxis(playerVertAxis)) < 0.5) {
-				thrusting = false;
-			}
 
 			if (turning && Mathf.Abs (Input.GetAxis (playerHorizAxis)) < 0.5) {
 				turning = false;
@@ -164,17 +161,8 @@ public class Player : MonoBehaviour {
         {
             if (turnSpeed > 0) 
                 turnSpeed -= 2.0f;
-        
         }
 
-        if (!thrusting)
-        {
-            if (wheelVelocity > 0)
-                wheelVelocity -= 2.0f;
-
-            if (wheelVelocity < 0)
-                wheelVelocity += 2.0f;
-        }
     }
 
     void OrientUp()
@@ -182,17 +170,22 @@ public class Player : MonoBehaviour {
         Ray rayToGround = new Ray();
         rayToGround.origin = transform.position;
         rayToGround.direction = Vector3.down;
-        
-        
+
+        Debug.DrawRay(rayToGround.origin, rayToGround.direction * 10, Color.red);
 
         RaycastHit hitInfo = new RaycastHit();
-        bool hit = Physics.Raycast(rayToGround, out hitInfo);
+        bool hit = Physics.Raycast(rayToGround, out hitInfo,Mathf.Infinity, LayerMask.GetMask("HitSurface"));
         
         if (hit)
         {
-            Debug.Log(hitInfo.normal);
-           //transform.up = Vector3.Slerp(transform.up, hitInfo.normal ,Time.deltaTime * 2.0f);
-           
+ 
+            if (Vector3.Distance(Vector3.Cross(transform.right, transform.forward), Vector3.Cross(hitInfo.transform.right,  hitInfo.transform.forward)) > orientTolerance)
+            {
+                Debug.Log("Orienting...");
+
+                transform.up = Vector3.RotateTowards(transform.up, Vector3.Cross(hitInfo.transform.right, -hitInfo.transform.forward), 2.0f * Time.deltaTime, 0.0f);
+            }
+
         }
     }
 
@@ -203,8 +196,6 @@ public class Player : MonoBehaviour {
             if (child.gameObject.tag == "Wheel")
             {
                 wheels.Add(child.gameObject);
-                Debug.Log("Added" + child.gameObject.name);
-                
             }
         }
     }
@@ -213,22 +204,57 @@ public class Player : MonoBehaviour {
     {
         foreach (GameObject g in wheels)
         {
-            g.transform.Rotate(Vector3.right, wheelVelocity * 4.0f * Time.deltaTime);
+           
+            g.transform.Rotate(Vector3.right, -rb.velocity.z * 4.0f * Time.deltaTime);
+            
         }
+
+        
     }
 
 	void OnTriggerEnter(Collider collider) {
-		if (collider.gameObject.layer == LayerMask.NameToLayer ("Pickups")) {
-			Destroy (collider.gameObject);
-			crosshairScript.addAmmo (5);
-		}
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Pickups"))
+        {
+            Destroy(collider.gameObject);
+            crosshairScript.addAmmo(5);
+        }
 
-		if (collider.gameObject.layer == LayerMask.NameToLayer ("StartLine")) {
-			lapManager.incrementLapCounter ();
+        if (collider.gameObject.layer == LayerMask.NameToLayer ("StartLine")) {
+            if (!startedRace)
+                startedRace = true;
+            if (startedRace)
+            {
+                lapManager.incrementLapCounter(playerNum);
+            }
+			
 		}
 
 		if (collider.gameObject.layer == LayerMask.NameToLayer ("MidLine")) {
-			lapManager.incrementMidCounter ();
+			lapManager.incrementMidCounter (playerNum);
 		}
 	}
+
+    void CheckBoost()
+    {
+        if (turnSpeed > 50 && boost++ < maxBoost && !boosting)
+        {
+            
+            boost++;
+            Debug.Log(boost);
+        }
+    }
+
+    void HandleBoost()
+    {
+        if (boosting && boost > 0)
+        {
+            speed = boostedSpeed;
+            boost -= 5;
+        }
+
+        if (!boosting || boost <= 0)
+        {
+            speed = baseSpeed;
+        }
+    }
 }

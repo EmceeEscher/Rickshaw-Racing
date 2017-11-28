@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class LapManagerScript : MonoBehaviour {
 
-	public int countdown = 3;
+    public int countdown;
 	public float countdownDelay = 1.0f;
-	public int numLaps = 1;
+    public int numLaps;
 
 	private float prevTime;
 	private bool hasStarted = false;
@@ -15,8 +15,13 @@ public class LapManagerScript : MonoBehaviour {
 	private string countdownText;
 	private GUIStyle countdownStyle;
 	private int countdownFontSize = 100;
-	private int P1LapCounter = -1;
-	private int P1MidCounter = 0;
+	private int P1LapCounter = 0;
+	private int P1MidCounter = 1;
+	private int P2LapCounter = 0;
+	private int P2MidCounter = 1;
+
+
+    public Text lapText;
 
 	// Use this for initialization
 	void Start () {
@@ -30,7 +35,9 @@ public class LapManagerScript : MonoBehaviour {
 		countdownStyle = new GUIStyle ();
 		countdownStyle.fontSize = countdownFontSize;
 		countdownStyle.alignment = TextAnchor.MiddleCenter;
-	}
+
+        lapText.text = "Lap: " + P1LapCounter + " / " + numLaps;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -51,10 +58,16 @@ public class LapManagerScript : MonoBehaviour {
 			countdownText = "";
 		}
 
-		if (P1LapCounter >= numLaps) {
+		if (P1LapCounter == numLaps + 1) {
 			hasFinished = true;
 			hasStarted = false;
 			countdownText = "P1 wins!";
+		}
+
+		if (P2LapCounter == numLaps + 1) {
+			hasFinished = true;
+			hasStarted = false;
+			countdownText = "P2 wins!";
 		}
 	}
 
@@ -74,15 +87,35 @@ public class LapManagerScript : MonoBehaviour {
 		return hasFinished;
 	}
 
-	public void incrementLapCounter() {
-		if (P1LapCounter < P1MidCounter) {
-			P1LapCounter++;
+	public void incrementLapCounter(int playerNum) {
+		if (playerNum == 1) {
+			if (P1LapCounter < P1MidCounter) {
+				P1LapCounter++;
+			}
+			if (P1LapCounter < numLaps + 1) {
+				lapText.text = "Lap: " + P1LapCounter + " / " + numLaps;
+			}
+		} else if (playerNum == 2) {
+			if (P2LapCounter < P2MidCounter) {
+				P2LapCounter++;
+			}
+			if (P2LapCounter < numLaps + 1) {
+				lapText.text = "Lap: " + P2LapCounter + " / " + numLaps;
+			}
 		}
+        
+        
 	}
 
-	public void incrementMidCounter() {
-		if (P1LapCounter == P1MidCounter) {
-			P1MidCounter++;
+	public void incrementMidCounter(int playerNum) {
+		if (playerNum == 1) {
+			if (P1LapCounter == P1MidCounter) {
+				P1MidCounter++;
+			}
+		} else if (playerNum == 2) {
+			if (P2LapCounter == P2MidCounter) {
+				P2MidCounter++;
+			}
 		}
 	}
 }

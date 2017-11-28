@@ -20,8 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4971495706940044}
   - component: {fileID: 33497237859227338}
-  - component: {fileID: 65715865162231950}
   - component: {fileID: 23560187079443360}
+  - component: {fileID: 136459386485263744}
   m_Layer: 9
   m_Name: weightCube
   m_TagString: Untagged
@@ -138,11 +138,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4015876620268438}
   - component: {fileID: 54065970989271852}
-  - component: {fileID: 65909843499850012}
   - component: {fileID: 114576626046596266}
+  - component: {fileID: 136875645850557252}
   m_Layer: 9
   m_Name: P1Rickshaw
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -190,6 +190,7 @@ GameObject:
   - component: {fileID: 33855357465589972}
   - component: {fileID: 23752083261657448}
   - component: {fileID: 96842977741208026}
+  - component: {fileID: 64482850120291172}
   m_Layer: 9
   m_Name: Wheel
   m_TagString: Wheel
@@ -208,6 +209,7 @@ GameObject:
   - component: {fileID: 33349543608936806}
   - component: {fileID: 23789788313412702}
   - component: {fileID: 96374565353152700}
+  - component: {fileID: 64567920723928838}
   m_Layer: 9
   m_Name: Wheel
   m_TagString: Wheel
@@ -746,37 +748,41 @@ Rigidbody:
   m_GameObject: {fileID: 1633227110894106}
   serializedVersion: 2
   m_Mass: 20
-  m_Drag: 1
-  m_AngularDrag: 2
+  m_Drag: 0.6
+  m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!65 &65715865162231950
-BoxCollider:
+--- !u!64 &64482850120291172
+MeshCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1349120831573094}
+  m_GameObject: {fileID: 1854821082330894}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!65 &65909843499850012
-BoxCollider:
+  m_Convex: 1
+  m_InflateMesh: 0
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300000, guid: 353f44c4303ce1443b7a4f8352a1e59b, type: 3}
+--- !u!64 &64567920723928838
+MeshCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1633227110894106}
-  m_Material: {fileID: 13400000, guid: 934ffc32e36302f4a8ce0a0499f9303e, type: 2}
+  m_GameObject: {fileID: 1932074452997740}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 24.585724, y: 34.742096, z: 25.788025}
-  m_Center: {x: 8.524109, y: 8.587799, z: 4.8330994}
+  m_Convex: 1
+  m_InflateMesh: 0
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300004, guid: 353f44c4303ce1443b7a4f8352a1e59b, type: 3}
 --- !u!96 &96374565353152700
 TrailRenderer:
   serializedVersion: 2
@@ -970,8 +976,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71fd09f68deb91b459ad980bd7633704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: -7000
+  speed: -5000
   targetRotation: {x: 0, y: 0, z: 0, w: 0}
   crosshairScript: {fileID: 0}
   startLine: {fileID: 0}
   wheels: []
+  usingController: 0
+  playerNum: 1
+--- !u!136 &136459386485263744
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1349120831573094}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.503939
+  m_Height: 1.105031
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.011817551, z: 0.0039391518}
+--- !u!136 &136875645850557252
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1633227110894106}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 9.42
+  m_Height: 36.724228
+  m_Direction: 1
+  m_Center: {x: 8.5, y: 9.327887, z: 0.14}
