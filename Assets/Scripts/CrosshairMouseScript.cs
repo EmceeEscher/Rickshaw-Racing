@@ -6,10 +6,10 @@ public class CrosshairMouseScript : MonoBehaviour {
 
 	private Rect position;
 	public Texture2D crosshairTexture;
-	public Rigidbody bulletRigidbody;
+	public GameObject bulletPrefab;
 	public Camera followCam;
 	public Transform car;
-	public float force = 0.0f;
+    public float force;
 	public int ammoCount = 10;
 	public GameObject startLine;
 	private LapManagerScript lapManager;
@@ -67,8 +67,12 @@ public class CrosshairMouseScript : MonoBehaviour {
 		bulletDir = bulletDir.normalized;
 		bulletDir.y = 0;
 		Vector3 bulletSpawnLoc = car.position + bulletDir * 10.0f;
-		Rigidbody bulletClone = (Rigidbody)Instantiate (bulletRigidbody, bulletSpawnLoc, Random.rotation);
-		bulletClone.velocity = bulletDir * force;
+		GameObject bulletClone = Instantiate (bulletPrefab, bulletSpawnLoc, Random.rotation);
+        Rigidbody bulletRb = bulletClone.GetComponent<Rigidbody>();
+        Debug.Log(GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody>().velocity);
+        bulletRb.velocity = GameObject.Find("P1Rickshaw").GetComponent<Rigidbody>().velocity;
+        bulletRb.AddForce(bulletDir * force);
+        
 	}
 
 	public void addAmmo(int amount) {

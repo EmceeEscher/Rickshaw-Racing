@@ -7,7 +7,7 @@ public class CrosshairControllerScript : MonoBehaviour {
 	private Rect position;
 	private Rect basePosition;
 	public Texture2D crosshairTexture;
-	public Rigidbody bulletRigidbody;
+	public GameObject bulletPrefab;
 	public Transform car;
 	public Camera followCam;
 	public float force = 0.0f;
@@ -16,6 +16,13 @@ public class CrosshairControllerScript : MonoBehaviour {
 	private LapManagerScript lapManager;
 	private float lastFireTime = 0.0f;
 	public float fireDelay = 1.0f;
+	public int playerNum = 1;
+	public float bulletSpawnDistance = 15.0f;
+	private string horizontalAimAxis = "HorizontalAimP1";
+	private string verticalAimAxis = "VerticalAimP1";
+	private string fireAxis = "FireP1";
+	private int bulletLayer;
+	private string parentName = "P1Rickshaw";
 
 	// Use this for initialization
 	void Start () {
@@ -30,6 +37,16 @@ public class CrosshairControllerScript : MonoBehaviour {
 		position = basePosition;
 
 		lapManager = startLine.GetComponent<LapManagerScript> ();
+
+		bulletLayer = LayerMask.NameToLayer ("P1Bullets");
+
+		if (playerNum == 2) {
+			horizontalAimAxis = "HorizontalAimP2";
+			verticalAimAxis = "VerticalAimP2";
+			fireAxis = "FireP2";
+			bulletLayer = LayerMask.NameToLayer ("P2Bullets");
+			parentName = "P1Rickshaw";
+		}
 	}
 
 	// Update is called once per frame
@@ -43,12 +60,12 @@ public class CrosshairControllerScript : MonoBehaviour {
 			crosshairTexture.height);
 
 		position = new Rect (
-			(basePosition.x + Input.GetAxis ("HorizontalAimP1") * 250.0f),
-			(basePosition.y + Input.GetAxis ("VerticalAimP1") * -250.0f),
+			(basePosition.x + Input.GetAxis (horizontalAimAxis) * 250.0f),
+			(basePosition.y + Input.GetAxis (verticalAimAxis) * -250.0f),
 			crosshairTexture.width,
 			crosshairTexture.height);
 
-		if (Input.GetAxis("FireP1") > 0 && (Time.time - lastFireTime) > fireDelay) {
+		if (Input.GetAxis(fireAxis) > 0 && (Time.time - lastFireTime) > fireDelay) {
 			OnFire ();
 			lastFireTime = Time.time;
 		}
@@ -86,9 +103,11 @@ public class CrosshairControllerScript : MonoBehaviour {
 		Vector3 bulletDir = crosshairLoc - car.position;
 		bulletDir = bulletDir.normalized;
 		bulletDir.y = 0;
-		Vector3 bulletSpawnLoc = car.position + bulletDir * 2.0f;
-		Rigidbody bulletClone = (Rigidbody)Instantiate (bulletRigidbody, bulletSpawnLoc, Random.rotation);
-		bulletClone.velocity = bulletDir * force;
+		Vector3 bulletSpawnLoc = car.position + bulletDir * bulletSpawnDistance;
+		GameObject bulletClone = Instantiate (bulletPrefab, bulletSpawnLoc, Random.rotation);
+		bulletClone.layer = bulletLayer;
+		Rigidbody bulletRb = bulletClone.GetComponent<Rigidbody> ();
+		bulletRb.velocity = bulletDir * force;
 	}
 
 	public void addAmmo(int amount) {
