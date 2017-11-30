@@ -104,7 +104,7 @@ public class CrosshairControllerScript : MonoBehaviour {
 		bulletDir = bulletDir.normalized;
 		bulletDir.y = 0;
 		Vector3 bulletSpawnLoc = car.position + bulletDir * bulletSpawnDistance;
-		GameObject bulletClone = Instantiate (bulletPrefab, bulletSpawnLoc, Random.rotation);
+		GameObject bulletClone = Instantiate (bulletPrefab, bulletSpawnLoc, Quaternion.identity);
 		bulletClone.layer = bulletLayer;
 		Rigidbody bulletRb = bulletClone.GetComponent<Rigidbody> ();
 		bulletRb.velocity = bulletDir * force;

@@ -546,11 +546,6 @@ MeshCollider:
   m_InflateMesh: 0
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300000, guid: c0c42e3ceebd42943ade3b7414c47afd, type: 3}
---- !u!4 &148475700 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4705781408594630, guid: bbc71e5612c11416b81cbec469a0ac9a,
-    type: 2}
-  m_PrefabInternal: {fileID: 993885957}
 --- !u!4 &166041284 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 0fd8c9aedd977ed42be170a9adcaf3e6, type: 3}
@@ -1840,10 +1835,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c029b3f8e16f20418c6405ea0597dd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1007254413}
-  camTarget: {fileID: 148475700}
-  offset: {x: 0, y: 0, z: 0}
-  tightness: 1
+  p1Rickshaw: {fileID: 1007254413}
+  p2Rickshaw: {fileID: 1695670981}
+  camOffset: {x: -95.5, y: 147.2, z: 100.5}
+  zoomFactor: 0.1
 --- !u!114 &456915712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7477,6 +7472,11 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: b2c239f9b60751e4ab9034c7f2ad66b1, type: 3}
   m_PrefabInternal: {fileID: 700974932}
+--- !u!4 &1695670981 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4015876620268438, guid: bbc71e5612c11416b81cbec469a0ac9a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1246821715}
 --- !u!1 &1700427856 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 100000, guid: dbc5628cb9f0d53469af5f3c987b5593, type: 3}
